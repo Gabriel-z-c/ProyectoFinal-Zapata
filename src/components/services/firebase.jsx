@@ -1,5 +1,5 @@
 // src/services/firebase.js
-import { getFirestore, collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, getDoc, query, where, addDoc } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 
 // Configuración de Firebase
@@ -28,29 +28,62 @@ export const getProductsFromFirestore = async () => {
     }));
 
     console.log("Productos obtenidos desde Firestore:", productos);
-    return productos; 
+    return productos;
   } catch (error) {
     console.error("Error al obtener productos desde Firestore:", error);
-    return [];  // Si hay error, retornamos un arreglo vacío
+    return [];
+  }
+};
+
+// Obtener productos por categoría desde Firestore
+export const getProductsByCategory = async (categoryId) => {
+  try {
+    // Crear una consulta para filtrar por categoría
+    const q = query(collection(db, "productos"), where("category", "==", categoryId));
+
+    const querySnapshot = await getDocs(q);
+    const productos = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return productos;
+  } catch (error) {
+    console.error("Error al obtener productos por categoría:", error);
+    return [];
   }
 };
 
 // Obtener un producto por ID
 export const getProductById = async (id) => {
+  console.log(`Buscando producto con ID: ${id}`);
   try {
     const docRef = doc(db, "productos", id);
     const docSnapshot = await getDoc(docRef);
 
     if (docSnapshot.exists()) {
+      console.log("Producto encontrado:", docSnapshot.data());
       return { id: docSnapshot.id, ...docSnapshot.data() };
     } else {
+      console.log("Producto no encontrado");
       throw new Error("Producto no encontrado");
     }
   } catch (error) {
     console.error("Error al obtener el producto:", error);
-    throw new Error("Error al obtener el producto");
+    throw new Error("Producto no encontrado"); // Se puede hacer un redireccionamiento aquí
+    // Por ejemplo, redirigir al listado de productos:
+    // history.push('/'); // Si usas React Router
+  }
+};
+// Agregar una orden a Firebase
+export const addOrderToFirestore = async (orderDetails) => {
+  try {
+    const orderRef = await addDoc(collection(db, "orders"), orderDetails);
+    return orderRef.id;  // Devuelve el ID de la orden creada
+  } catch (error) {
+    console.error("Error al crear la orden: ", error);
+    throw error;
   }
 };
 
 export { db };
-

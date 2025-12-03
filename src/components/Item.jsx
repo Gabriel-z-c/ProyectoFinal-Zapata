@@ -3,7 +3,6 @@ import React from "react";
 import { Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-// Este componente representa cada producto individualmente en una tarjeta
 const Item = ({ product, addToCart }) => {
   return (
     <Card style={{ width: '18rem', margin: '1rem' }}>

@@ -1,8 +1,7 @@
- import React from 'react';
+// src/components/CartWidget.jsx
+import React from 'react';
 
-const CartWidget = ({ cart }) => {
-  const cartLength = cart.length;  // Obtenemos la cantidad de productos en el carrito
-
+const CartWidget = ({ cartLength }) => {
   return (
     <div className="cart-widget">
       🛒

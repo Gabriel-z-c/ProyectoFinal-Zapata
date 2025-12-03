@@ -1,25 +1,28 @@
-// src/components/ItemCount.js
 import React, { useState } from 'react';
-
 const ItemCount = ({ stock, onAdd }) => {
   const [count, setCount] = useState(1);
-
-  // Asegura que no exceda el stock
+  const [error, setError] = useState('');
   const handleIncrement = () => {
     if (count < stock) {
       setCount(count + 1);
+      setError('');
+    } else {
+      setError('No puedes agregar más de lo que hay en stock.');
     }
   };
 
   const handleDecrement = () => {
     if (count > 1) {
       setCount(count - 1);
+      setError('');
     }
   };
 
   const handleAddToCart = () => {
     if (count <= stock) {
-      onAdd(count); // Llama a la función onAdd que se pasa como prop
+      onAdd(count);
+    } else {
+      setError('No puedes agregar más de lo que hay en stock.');
     }
   };
 
@@ -29,6 +32,7 @@ const ItemCount = ({ stock, onAdd }) => {
       <span>{count}</span>
       <button onClick={handleIncrement} disabled={count >= stock}>+</button>
       <button onClick={handleAddToCart}>Agregar al carrito</button>
+      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Mostrar mensaje de error */}
     </div>
   );
 };

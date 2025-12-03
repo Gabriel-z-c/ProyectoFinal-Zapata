@@ -1,29 +1,30 @@
  // src/components/ItemDetailContainer.jsx
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';  // Para capturar los parámetros de la URL
-import { getProductById } from './services/firebase';  // Función para obtener un producto por su ID desde Firebase
-import ItemCount from './ItemCount';  // Componente para seleccionar la cantidad
-import { useCart } from '../contexts/CartContext';  // Contexto del carrito para agregar productos
+import { useParams } from 'react-router-dom';
+import { getProductById } from './services/firebase';
+import ItemCount from './ItemCount';
+import { useCart } from '../contexts/CartContext';
 
 const ItemDetailContainer = () => {
-  const { id } = useParams();  // Capturamos el parámetro 'id' de la URL (ID del producto)
-  const [producto, setProducto] = useState(null);  // Estado para el producto
-  const [loading, setLoading] = useState(true);  // Estado de carga
-  const { addToCart } = useCart();  // Función para agregar al carrito
+  const { id } = useParams();
+  const [producto, setProducto] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();
+  const history = useHistory();
 
   useEffect(() => {
-    // Función para obtener el producto desde Firestore
     getProductById(id)
       .then((data) => {
-        setProducto(data);  // Actualizamos el estado con los datos del producto
+        setProducto(data);
       })
       .catch((error) => {
         console.error("Error al obtener el producto:", error);
+        history.push('/');
       })
       .finally(() => {
-        setLoading(false);  // Finalizamos el estado de carga
+        setLoading(false);
       });
-  }, [id]);  // Solo se ejecuta cuando cambia el parámetro 'id'
+  }, [id, history]);
 
   const addToCartHandler = (quantity) => {
     if (producto) {
@@ -32,9 +33,9 @@ const ItemDetailContainer = () => {
     }
   };
 
-  if (loading) return <p>Cargando...</p>;  // Mientras carga, mostramos un mensaje
+  if (loading) return <p>Cargando...</p>;
 
-  if (!producto) return <p>Producto no encontrado.</p>;  // Si no encontramos el producto, mostramos un mensaje
+  if (!producto) return <p>Producto no encontrado.</p>;
 
   return (
     <div className="item-detail-container">
@@ -42,12 +43,10 @@ const ItemDetailContainer = () => {
       <p>{producto.description}</p>
       <p>Precio: ${producto.price}</p>
       <p>Stock disponible: {producto.stock}</p>
-
       <img src={producto.img} alt={producto.name} className="item-detail-image" />
-
       <ItemCount
         stock={producto.stock}
-        onAdd={addToCartHandler}  // Llamamos a la función para agregar al carrito
+        onAdd={addToCartHandler}
       />
     </div>
   );

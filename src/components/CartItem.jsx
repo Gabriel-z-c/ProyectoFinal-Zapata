@@ -1,3 +1,4 @@
+// src/components/CartItem.jsx
 import React from "react";
 
 const CartItem = ({ producto, removeFromCart }) => {
@@ -6,7 +7,7 @@ const CartItem = ({ producto, removeFromCart }) => {
       <h3>{producto.name}</h3>
       <p>Cantidad: {producto.quantity}</p>
       <p>Precio: ${producto.price}</p>
-      <button onClick={() => removeFromCart(producto.id)}>Eliminar</button>
+      <button onClick={() => removeFromCart(producto.id)}>Eliminar</button>  {/* Eliminar producto */}
     </div>
   );
 };
