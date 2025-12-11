@@ -1,41 +1,41 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+// CartContext.js
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// Crear el contexto del carrito
 export const CartContext = createContext();
 
-// Usamos el hook para acceder al contexto del carrito
 export const useCart = () => useContext(CartContext);
 
-// El proveedor del contexto que envuelve a todos los componentes hijos
 export const CartProvider = ({ children }) => {
-  // Definimos la constante para obtener el carrito guardado en localStorage
   const getSavedCart = () => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   };
 
-  // Inicializamos el estado con la constante
   const [cart, setCart] = useState(getSavedCart);
 
   useEffect(() => {
-    // Guardamos el carrito actualizado en el localStorage
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
   // Función para agregar productos al carrito
-  const addToCart = (product) => {
+  const addToCart = (product, qty) => {
     setCart((prevCart) => {
       const existingProduct = prevCart.find((item) => item.id === product.id);
       if (existingProduct) {
         return prevCart.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + product.quantity }
+            ? { ...item, quantity: item.quantity + qty }
             : item
         );
       } else {
-        return [...prevCart, { ...product, quantity: product.quantity }];
+        return [...prevCart, { ...product, quantity: qty }];
       }
     });
+  };
+
+  // Función para eliminar productos del carrito
+  const removeFromCart = (productId) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
   };
 
   // Función para calcular la cantidad total de productos en el carrito
@@ -43,14 +43,18 @@ export const CartProvider = ({ children }) => {
     return cart.reduce((acc, item) => acc + item.quantity, 0);
   };
 
-  // Función para limpiar el carrito
+  // Función para obtener el total de la compra
+  const total = () => {
+    return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  };
+
   const clearCart = () => {
     setCart([]);
     localStorage.removeItem("cart");
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, cartQuantity, clearCart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, cartQuantity, total, clearCart }}>
       {children}
     </CartContext.Provider>
   );

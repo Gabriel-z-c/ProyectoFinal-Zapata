@@ -8,11 +8,11 @@ import { NavLink } from 'react-router-dom';
 
 function NavbarBS() {
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar expand="lg" className="bg-body-terciary">
       <Container>
         {/* Logo de la tienda */}
         <Navbar.Brand as={NavLink} to="/">
-          <img src="logo-shop.png" alt="logo" style={{ width: '7rem' }} />
+          <img src="../img/logo-shop.jpg" alt="logo" style={{ width: '7rem' }} />
         </Navbar.Brand>
         
         {/* Botón para el menú en dispositivos móviles */}

@@ -9,7 +9,7 @@ const Item = ({ product, addToCart }) => {
       <Card.Body>
         <Card.Title>{product.name}</Card.Title>
         <Card.Text>Precio: ${product.price}</Card.Text>
-        <Button variant="primary" onClick={() => addToCart(product)}>
+        <Button variant="primary" onClick={() => addToCart(product, 1)}>
           Añadir al carrito
         </Button>
         {/* Enlace para ir al detalle del producto */}

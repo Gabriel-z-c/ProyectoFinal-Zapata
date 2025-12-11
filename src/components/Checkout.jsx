@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';  // Accedemos al carrito desde el contexto
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore'; // Firestore
-import { db } from './services/firebase';  // Asegúrate de que tu Firebase esté bien configurado
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore'; // Firebase
+import { db } from './services/firebase';  // Configuración de Firebase
 import { Link } from 'react-router-dom';
-import EmptyCart from './EmptyCart';  // Si no hay productos, muestra un mensaje
+import EmptyCart from './EmptyCart';  // Muestra mensaje si no hay productos
 
 const Checkout = () => {
-  const { cart, total, clear } = useCart();  // Obtenemos el carrito, el total y la función para limpiar el carrito
+  const { cart, total, clear } = useCart();  // Accedemos al carrito y al total desde el contexto
   const [buyer, setBuyer] = useState({ name: '', lastname: '', email: '', address: '' });  // Datos del comprador
   const [secondMail, setSecondMail] = useState('');  // Correo para confirmar
   const [error, setError] = useState(null);  // Manejo de errores
@@ -30,22 +30,23 @@ const Checkout = () => {
     } else {
       setError(null);  // Limpiamos cualquier error previo
 
+      // Objeto con la información de la orden
       const order = {
         comprador: buyer,
         compras: cart,
         total: total(),  // Calculamos el total desde el contexto
-        fecha: serverTimestamp(),  // Usamos Firestore para agregar la fecha actual
+        fecha: serverTimestamp(),  // Agregamos la fecha actual usando Firestore
       };
 
-      const ventas = collection(db, 'orders');  // Refiere a la colección "orders" en Firestore
+      const ventas = collection(db, 'orders');  // Referencia a la colección "orders" en Firestore
 
       // Guardamos la orden en Firestore
       addDoc(ventas, order)
         .then((res) => {
           setOrderId(res.id);  // Establecemos el ID de la orden
-          clear();  // Limpiamos el carrito
+          clear();  // Limpiamos el carrito después de la compra
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.log(error));  // Manejo de errores
     }
   };
 
@@ -89,7 +90,7 @@ const Checkout = () => {
               className="form-control"
               name="address"
               type="text"
-              placeholder="Ingresa su dirección"
+              placeholder="Ingresa tu dirección"
               value={buyer.address}
               onChange={handleInputChange}
             />

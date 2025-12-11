@@ -1,4 +1,3 @@
-// src/components/ItemDetail.jsx
 import React, { useState } from 'react';
 import ItemCount from './ItemCount';  // Importamos el componente ItemCount
 import { useContext } from 'react';
@@ -22,11 +21,21 @@ const ItemDetail = ({ detalle }) => {
   // Calculamos el stock disponible
   const stockActualizado = detalle.stock - cartQuantity(detalle.id);
 
+  // Lógica para determinar si la imagen es local o remota
+  const getImageUrl = (img) => {
+    // Si la imagen tiene el prefijo 'http' o 'https', es una URL completa
+    if (img && (img.startsWith('http://') || img.startsWith('https://'))) {
+      return img;  // Imagen remota
+    }
+    // Si no es una URL completa, asumimos que la imagen está en public/img/
+    return `/img/${img}`;  // Imagen local (sin doble barra)
+  };
+
   return (
     <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', flexWrap: 'wrap' }}>
       <h1>Detalle de: {detalle.name}</h1>
-      {/* Aquí accedemos a la imagen en public/img/ */}
-      <img src={`/img/${detalle.img}`} alt={detalle.name} />
+      {/* Usamos la función getImageUrl para obtener la ruta correcta de la imagen */}
+      <img src={getImageUrl(detalle.img)} alt={detalle.name} />
       <p>{detalle.description}</p>
       <p>${detalle.price},00</p>
       <p>STOCK DISPONIBLE: {stockActualizado}</p>
